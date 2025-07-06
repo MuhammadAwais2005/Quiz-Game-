@@ -1,0 +1,218 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(92, 92, 92);
+    /* Fallback color */
+    background-size: cover;
+    background-image: url(background.jpeg);
+    transition: none !important;
+    /* Removes all transitions */
+    /* Gradient background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-attachment: fixed;
+    /* Keeps the background fixed */
+}
+
+.continue-image {
+    width: 190px;
+    /* Adjust width */
+    height: 90px;
+    font-size: xx-large;
+    margin-bottom: 20px;
+    /* Space between the image and the text */
+}
+
+.continue-container {
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    background: #ffffff0c;
+    /* Transparent white */
+    backdrop-filter: blur(10px);
+    /* Frosted glass effect */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    /* Soft border */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    /* Soft shadow */
+    transition: all 0.3s ease;
+}
+
+/* Dropdown Container */
+.input-group {
+    margin-bottom: 15px;
+    background: rgba(89, 0, 255, 0.082);
+    /* Transparent background */
+    backdrop-filter: blur(5px);
+    /* Frosted glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle border */
+    padding: 10px;
+    border-radius: 8px;
+    /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Light shadow */
+    transition: all 0.3s ease;
+    /* Smooth hover effect */
+    font-family: Arial, sans-serif;
+
+
+}
+
+.input-group:hover {
+    background: rgba(240, 230, 255, 0.162);
+    /* Slightly more opaque on hover */
+    transform: translateY(-2px);
+    /* Subtle hover effect */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* Enhanced shadow */
+}
+
+/* Advanced Frosted Glass Style */
+.custom-select,
+.form-control {
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ecececc5;
+    /* Darker text for readability */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle transparent border */
+    border-radius: 20px;
+    /* Smooth rounded corners */
+    backdrop-filter: blur(5px) saturate(150%);
+    /* Enhanced frosted effect */
+    background: rgba(255, 255, 255, 0);
+    /* More transparent white */
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1),
+        0 4px 15px rgba(0, 0, 0, 0.2);
+    /* Inner and outer shadows for depth */
+    transition: all 0.4s ease;
+    /* Smooth animations */
+    appearance: none;
+    /* Remove default browser styles */
+}
+
+/* Hover Effects */
+.form-control:hover {
+    background: rgba(189, 179, 179, 0.4);
+    /* Slightly more opaque background */
+    border-color: rgba(255, 255, 255, 0.3);
+    /* Slightly brighter border */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    /* Enhanced shadow */
+    transform: none;
+    /* Prevent shifting of the dropdown */
+    background-position: right 12px center;
+    /* Keep arrow fixed */
+
+}
+
+.custom-select:hover {
+    background: rgba(189, 179, 179, 0.4);
+    /* Slightly more opaque background */
+    border-color: rgba(255, 255, 255, 0.3);
+    /* Slightly brighter border */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    /* Enhanced shadow */
+    transform: none;
+    /* Prevent shifting of the dropdown */
+}
+
+/* Focus Effects */
+.custom-select:focus,
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.5);
+    /* Slightly more prominent frosted effect */
+    border-color: rgba(253, 253, 253, 0.959);
+    /* Bright border for focus */
+    border-radius: 50px;
+    box-shadow: 0 0 5px rgba(100, 0, 220, 0.959),
+        0 0 5px rgba(200, 0, 220, 0.959);
+    /* Glow effect */
+    outline: none;
+    /* Remove browser default outline */
+    transform: translateY(-1px);
+    /* Subtle hover-lift effect persists */
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.76);
+    /* Dropdown background color */
+    color: rgb(255, 255, 255);
+    /* Dropdown text color */
+    cursor: pointer;
+    background-position: right 12px center;
+    /* Keep arrow fixed */
+}
+
+
+
+/* Arrow for Custom Select */
+.custom-select {
+    background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%2220%22 height%3D%2210%22 viewBox%3D%220 0 20 10%22%3E%3Cpath fill%3D%22%23ffffff%22 d%3D%22M10 10L0 0h20z%22/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    /* Keep arrow in place */
+    background-size: 12px 12px;
+    appearance: none;
+    /* Remove default dropdown styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgba(255, 255, 255, 0.267);
+    /* Transparent dropdown background */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle border */
+    border-radius: 10px;
+    padding: 12px 16px;
+    width: 100%;
+    color: #ecececc5;
+    /* Text color */
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1),
+        0 4px 15px rgba(0, 0, 0, 0.2);
+    /* Shadows for depth */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+
+.continue-btn {
+    background: linear-gradient(145deg, #0f0e5f, #9421ff);
+    /* Gradient background */
+    color: rgb(255, 255, 255);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0);
+    /* Soft shadows */
+    transition: all 0.3s ease;
+    /* Smooth transition */
+    outline: none;
+}
+
+.continue-btn:hover {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(145deg, #9421ff, #0f0e5f);
+    /* Reversed gradient */
+    transform: translateY(4px);
+    /* Slight lift on hover */
+    transition: 0.3s;
+    box-shadow: 4px 4px 15px #0f0e5f, -2px -2px 10px #9421ff;
+    /*shadow */
+}

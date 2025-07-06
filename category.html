@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game - Category Selection</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(92, 92, 92); /* Fallback color */
+    background-size: cover;
+    background-image: url('{{ url_for('static', filename='background.jpeg') }}');
+    transition: none !important; /* Removes all transitions */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-attachment: fixed; /* Keeps the background fixed */
+}
+.continue-image {
+    width: 190px;
+    height: 90px;
+    font-size: xx-large;
+    margin-bottom: 5px; /* Space between the image and the text */
+}
+
+.continue-container {
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    max-height: 660px;
+    text-align: center;
+    background: #ffffff0c; 
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    transition: all 0.3s ease;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    background: rgba(89, 0, 255, 0.082); /* Transparent background */
+    backdrop-comment: blur(5px); /* Frosted glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 10px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+    transition: all 0.3s ease; /* Smooth hover effect */
+    font-family: Arial, sans-serif;
+}
+
+.input-group:hover {
+    background: rgba(240, 230, 255, 0.162); /* Slightly more opaque on hover */
+    transform: translateY(-2px); /* Subtle hover effect */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+}
+
+/* Advanced Frosted Glass Style */
+.custom-select,
+.form-control {
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ecececc5; /* Darker text for readability */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle transparent border */
+    border-radius: 20px; /* Smooth rounded corners */
+    backdrop-filter: blur(5px) saturate(150%); /* Enhanced frosted effect */
+    background: rgba(255, 255, 255, 0); /* More transparent white */
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1), 
+                0 4px 15px rgba(0, 0, 0, 0.2); /* Inner and outer shadows for depth */
+    transition: all 0.4s ease; /* Smooth animations */
+    appearance: none; /* Remove default browser styles */
+}
+
+/* Hover Effects */
+.form-control:hover {
+    background: rgba(189, 179, 179, 0.4); /* Slightly more opaque background */
+    border-color: rgba(255, 255, 255, 0.3); /* Slightly brighter border */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+    transform: none; /* Prevent shifting of the dropdown */
+ನcomment: right 12px center; /* Keep arrow fixed */
+}
+
+.custom-select:hover {
+    background: rgba(189, 179, 179, 0.4); /* Slightly more opaque background */
+    border-color: rgba(255, 255, 255, 0.3); /* Slightly brighter border */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+    transform: none; /* Prevent shifting of the dropdown */
+}
+
+/* Focus Effects */
+.custom-select:focus,
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.5); /* Slightly more prominent frosted effect */
+    border-color: rgba(253, 253, 253, 0.959); /* Bright border for focus */
+    border-radius: 50px;
+    box-shadow: 0 0 5px rgba(100, 0, 220, 0.959), 
+                0 0 5px rgba(200, 0, 220, 0.959); /* Glow effect */
+    outline: none; /* Remove browser default outline */
+    transform: translateY(-1px); /* Subtle hover-lift effect persists */
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.76); /* Dropdown background color */
+    color: rgb(255, 255, 255); /* Dropdown text color */
+    cursor: pointer;
+    background-position: right 12px center; /* Keep arrow fixed */
+}
+
+/* Arrow for Custom Select */
+.custom-select {
+    background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%2220%22 height%3D%2210%22 viewBox%3D%220 0 20 10%22%3E%3Cpath fill%3D%22%23ffffff%22 d%3D%22M10 10L0 0h20z%22/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 12px center; /* Keep arrow in place */
+    background-size: 12px 12px;
+    appearance: none; /* Remove default dropdown styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgba(255, 255, 255, 0.267); /* Transparent dropdown background */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    border-radius: 10px;
+    padding: 12px 16px;
+    width: 100%;
+    color: #ecececc5; /* Text color */
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1), 
+                0 4px 15px rgba(0, 0, 0, 0.2); /* Shadows for depth */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.start-btn {
+    background: linear-gradient(145deg, #0f0e5f, #9421ff); /* Gradient background */
+    color: rgb(255, 255, 255);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0); /* Soft shadows */
+    transition: all 0.3s ease; /* Smooth transition */
+    outline: none;
+}
+
+.start-btn:hover {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(145deg, #9421ff, #0f0e5f); /* Reversed gradient */
+    transform: translateY(4px); /* Slight lift on hover */
+    transition: 0.3s;
+    box-shadow: 4px 4px 15px #0f0e5f, -2px -2px 10px #9421ff; /* shadow */
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0, 0.6);
+    padding: 5px 20px; /* Reduced padding to make the navbar shorter */
+    box-shadow: 2px 2px 4px #008cff, -2px -2px 8px #008cff;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    height: 60px; /* Set a fixed height for the navbar */
+}
+
+.profile {
+    font-size: 30px;
+    color: white;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    transition: transform 0.3s ease;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.nav-links a:hover {
+    background: linear-gradient(145deg, #4109c4, #5600a7);
+    border-radius: 20px;
+    color: #fff;
+    box-shadow: 2px 2px 10px #21c0ff, -2px -2px 10px #0f0e5f;
+    transform: scale(0.5);
+}
+
+.nav-links a.active {
+    background: linear-gradient(145deg, #4109c4, #5600a7);
+    box-shadow: 2px 2px 10px #0047a3, -2px -2px 5px #21c0ff;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Basic reset to remove margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Style for the arrow button */
+.arrow-btn {
+    position: fixed; /* Fixed positioning for top-left */
+    top: 20px; /* 20px from the top */
+    left: 20px; /* 20px from the left */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #0f0e5f, #9421ff); /* Gradient background */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 30px; /* Bold arrow font size */
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(148, 33, 255, 0.5); /* Shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition */
+    text-align: center;
+    z-index: 9999; /* Ensure it's on top of other content */
+}
+
+/* Style for the arrow inside the button */
+.arrow-btn .arrow {
+    font-size: 36px; /* Bigger arrow */
+    font-weight: bold;
+    transform: rotate(0deg); /* Pointing right */
+}
+
+/* Hover effect for the button */
+.arrow-btn:hover {
+    background: linear-gradient(145deg, #9421ff, #0f0e5f); /* Reverse the gradient on hover */
+    transform: translateY(-6px); /* Lift the button slightly */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(148, 33, 255, 0.6); /* Enhanced shadow */
+}
+
+/* Focus effect */
+.arrow-btn:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 10px rgba(100, 0, 220, 0.8), 0 0 20px rgba(200, 0, 220, 0.6); /* Glow effect */
+}
+
+/* Smooth transition for button effects */
+.arrow-btn {
+    transition: all 0.3s ease; /* Make the hover/focus transitions smoother */
+}
+
+/* Hamburger Menu for Mobile */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hamburger .line {
+    width: 30px;
+    height: 4px;
+    background-color: #ecf0f1;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.hamburger.open .line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open .line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.open .line:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-links {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        background-color: #34495e;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        padding: 15px 0;
+        transform: translateX(100%);
+    }
+
+    .nav-links.active {
+        transform: translateX(0);
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('lobby') }}">
+        <button class="arrow-btn">
+            <span class="arrow">←</span>
+        </button>
+    </a>
+    
+    <div class="continue-container">
+        <img src="{{ url_for('static', filename='qwizzy.png') }}" alt="Quiz Logo" style="width:200px"> 
+        <form id="quizForm" action="{{ url_for('start_game') }}" method="POST">
+            <div class="input-group">
+                <label style="color: rgb(255, 255, 255);" for="js-qAmount"><b>Questions</b></label>
+                <select class="custom-select form-control" id="js-qAmount" name="questions">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label style="color: rgb(255, 255, 255);" for="js-qCategory"><b>Category</b></label>
+                <select class="custom-select form-control" id="js-qCategory" name="category">
+                    <option value="9" selected>General Knowledge</option>
+                    <option value="18">Computer Science</option>
+                    <option value="21">Sports</option>
+                    <option value="23">History</option>
+                    <option value="22">Geography</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label style="color: rgb(255, 255, 255);" for="js-qDifficulty"><b>Difficulty</b></label>
+                <select class="custom-select form-control" id="js-qDifficulty" name="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="difficult">Hard</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label style="color: rgb(255, 255, 255);" for="js-qType"><b>Type</b></label>
+                <select class="custom-select form-control" id="js-qType" name="type">
+                    <option value="multiple">Multiple Choice</option>
+                    <option value="boolean">True/False</option>
+                </select>
+            </div>
+
+            <button type="submit" class="start-btn"><b>Start Game</b></button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('quizForm');
+        const startBtn = document.querySelector('.start-btn');
+
+        form.addEventListener('submit', (event) => {
+            // Optional: Add client-side validation
+            const categorySelect = document.getElementById('js-qCategory').value;
+            const difficultySelect = document.getElementById('js-qDifficulty').value;
+            const amountSelect = document.getElementById('js-qAmount').value;
+            const typeSelect = document.getElementById('js-qType').value;
+
+            if (!categorySelect || !difficultySelect || !amountSelect || !typeSelect) {
+                event.preventDefault();
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            // Show a loading state on the button
+            startBtn.disabled = true;
+            startBtn.textContent = 'Loading...';
+
+            // Allow the form to submit naturally to /start_game
+            // No need for preventDefault or manual redirect
+        });
+    </script>
+</body>
+</html>

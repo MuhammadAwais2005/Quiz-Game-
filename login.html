@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('{{ url_for('static', filename='background.jpeg') }}');
+      background-color: black;
+      background-size: cover;
+      background-attachment: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 50px rgba(0, 0, 0, 0.651) inset !important;
+      background-color: transparent !important;
+      color: white !important;
+      border: 1px solid rgba(255, 0, 255, 0.5);
+    }
+
+    input[type="email"],
+    input[type="text"] {
+      background-color: transparent !important;
+      color: white !important;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    .login-container {
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      background: #ffffff0c;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .continue-image {
+      width: 200px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-family: system-ui, sans-serif;
+      color: #ffffff;
+      font-size: 24px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.281);
+    }
+
+    .input-group {
+      text-align: left;
+      padding: 5px;
+      margin: 15px;
+      color: #ffffff;
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px 0;
+      font-size: 16px;
+      border: none;
+      border-bottom: 2px solid #ffffff93;
+      background: transparent;
+      color: #fffbfb;
+    }
+
+    .input-group input:focus {
+      border-bottom: 2px solid #0077ff;
+    }
+
+    .login-btn {
+      background: linear-gradient(145deg, #0f0e5f, #9421ff);
+      color: white;
+      font-size: 16px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+
+    .login-btn:hover {
+      background: linear-gradient(145deg, #9421ff, #0f0e5f);
+      transform: translateY(2px);
+    }
+
+    .signup-link,
+    .forgot-password {
+      margin-top: 15px;
+      font-size: 14px;
+      color: rgba(240, 248, 255, 0.7);
+    }
+
+    .signup-link a,
+    .forgot-password a {
+      color: #0099ff;
+      text-decoration: none;
+    }
+
+    .signup-link a:hover,
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    .loading-screen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container" id="login-container">
+    <img src="{{ url_for('static', filename='qwizzy.png') }}" alt="Quiz Logo" style = "width:200px"> 
+       <h2>Login to Your Account</h2>
+    <form id="login-form">
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit" class="login-btn">LOGIN</button>
+      <p class="signup-link">Don't have an account? <b><a href="{{ url_for('signup') }}">Sign Up</a></b></p>
+      <p class="forgot-password"><a href="forgot.html">Forgot password?</a></p>
+    </form>
+  </div>
+
+  <div class="loading-screen" id="loading-screen">
+    <p id="loading-message">Logging in...</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDn8B9RI1zkTFwtzoMgdbeMFmv2zMpJggM",
+      authDomain: "qwiizzy-app.firebaseapp.com",
+      projectId: "qwiizzy-app",
+      storageBucket: "qwiizzy-app.firebasestorage.app",
+      messagingSenderId: "803641473987",
+      appId: "1:803641473987:web:c2e7fd9da9fdc2b7585b76"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("loading-screen").style.display = "none";
+    });
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const loadingScreen = document.getElementById("loading-screen");
+      const loginContainer = document.getElementById("login-container");
+      const loadingMessage = document.getElementById("loading-message");
+
+      loginContainer.style.display = "none";
+      loadingScreen.style.display = "flex";
+      loadingMessage.innerText = "Logging in...";
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        loadingMessage.innerHTML = "<b style='color: green;'>Login Successful!</b>";
+        setTimeout(() => {
+          window.location.href = "/lobby";
+        }, 2000);
+      } catch (error) {
+        loadingMessage.innerHTML = "<b style='color: red;'>Login Failed! Invalid credentials.</b>";
+        setTimeout(() => {
+          loadingScreen.style.display = "none";
+          loginContainer.style.display = "block";
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>

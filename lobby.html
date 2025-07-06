@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game - Professional Navigation Bar</title>
+    <style>
+     
+     * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url('{{ url_for('static', filename='background.jpeg') }}');
+            font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #000000;
+            color: #333;
+            margin-bottom: 80px; /* For Footer spacing */
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-attachment: fixed; /* Ensures the image stays fixed while scrolling */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 5px 20px; /* Reduced padding to make the navbar shorter */
+            box-shadow: 2px 2px 4px  #008cff, -2px -2px 8px #008cff;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            height: 60px; /* Set a fixed height for the navbar */
+        }
+
+        /* Profile Section */
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; /* Makes the image round */
+            border: 2px solid #21c0ff; /* Adds a border around the profile picture */
+            object-fit: cover; /* Ensures the image fits well */
+        }
+
+        .user-id {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(145deg, #4109c4, #5600a7);
+            border-radius:20px;
+            color: #fff;
+            box-shadow: 2px 2px 10px #21c0ff, -2px -2px 10px  #0f0e5f;
+            transform: scale(0.5);
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(145deg, #4109c4, #5600a7);
+            box-shadow: 2px 2px 10px #0047a3, -2px -2px 5px  #21c0ff;
+            border-radius:20px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* Hamburger Menu for Mobile */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger .line {
+            width: 30px;
+            height: 4px;
+            background-color: #ecf0f1;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.open .line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.open .line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open .line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: 0;
+                background-color: #34495e;
+                flex-direction: column;
+                width: 100%;
+                align-items: center;
+                padding: 15px 0;
+                transform: translateX(100%);
+            }
+
+            .nav-links.active {
+                transform: translateX(0);
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.3);
+            box-shadow: 2px 2px 4px  #008cff, -2px -2px 8px #008cff;
+            backdrop-filter: blur(5px);
+            color: #ecf0f1;
+            padding: 25px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 14px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        footer a {
+            color: #1abc9c;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ecf0f1;
+        }
+        
+        /* Quiz Container */
+      .quiz-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          width: 100%;
+          margin-top: 80px;
+          position: relative;
+          color: #ecf0f1;
+      }
+      
+      /* Quiz Card Styling */
+      .quiz-card {
+          background: #e4e3e300;
+          backdrop-filter: blur(15px); /* Frosted Glass Effect */
+          margin-top:50px;
+          -webkit-backdrop-filter: blur(15px);
+          border-radius: 25px;
+          padding: 2rem;
+          max-width: 500px;
+          max-height: 900px;
+          text-align: center;
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          overflow: hidden;
+      }
+      
+      /* Continue Image */
+      .continue-image {
+          width: auto;
+          height: 100px;
+          margin-bottom: 1rem;
+      }
+      
+      /* Quiz Title */
+      .quiz-title {
+          font-size: 2rem;
+          margin-bottom: 1rem;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      }
+      
+      /* Quiz Description */
+      .quiz-description {
+          font-size: 1rem;
+          margin-bottom: 1rem;
+          color: rgba(255, 255, 255, 0.8);
+      }
+      
+      /* Features List */
+      .quiz-features ul {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          list-style: disc; /* Default dot bullets */
+          padding-left: 20px; /* Creates space for the bullets */
+          margin-bottom: 1.5rem;
+          font-size: 1rem;
+          text-align: left; /* Ensures text aligns with the bullets */
+      }
+      
+      .quiz-features li {
+          margin: 0.5rem 0;
+      }
+      
+      /* Button Group */
+      .button-group {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          margin-top: 0.5rem;
+      }
+          
+      /* Login Button */
+      .login-btn, .start-btn{
+          background: linear-gradient(145deg, #0f0e5f, #9421ff);
+          color: white;
+          font-size: 1rem;
+          font-weight: bold;
+          padding: 0.75rem 1.5rem;
+          margin-top: 20px;
+          margin-bottom: 10px;
+          border: none;
+          border-radius: 50px;
+          cursor: pointer;
+          transition: transform 0.2s;
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+          outline: none;
+      }
+      
+      .login-btn:hover, .start-btn:hover{
+              background: linear-gradient(145deg, #9421ff, #0f0e5f); /* Reversed gradient */
+              transform: translateY(4px); /* Slight lift on hover */
+              transition: 0.3s;
+              box-shadow: 4px 4px 15px #0f0e5f, -2px -2px 10px #9421ff; /* Enhanced shadow */
+      }
+
+    </style>
+</head>
+<body>
+    
+    <nav class="navbar">
+        <div class="profile">
+            
+            <div class="user-id"></div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="{{ url_for('category') }}">Quiz</a></li>
+            <li><a href={{ url_for('leaderboard') }}>Leaderboard</a></li>
+            <li><a href="#" id="logout-link">Logout</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </nav>
+
+    <div class="quiz-container">
+        <div class="quiz-card">
+            <img src="qwizzy.png" alt="Quiz Game" class="continue-image">
+            <p class="quiz-description">
+                <b> Test Your Knowledge and Challenge Your Friends!</b>
+            </p>
+            <div class="quiz-features">
+                <ul>
+                    <b><li> Multiple Categories</li></b>
+                    <b><li> Time Challenges</li></b>
+                    <b><li> Compete on the Leaderboards!</li></b>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Qwizzy Game. All rights reserved.</p>
+    </footer>
+
+     <!-- Firebase SDK -->
+     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDn8B9RI1zkTFwtzoMgdbeMFmv2zMpJggM",
+            authDomain: "qwiizzy-app.firebaseapp.com",
+            projectId: "qwiizzy-app",
+            storageBucket: "qwiizzy-app.firebasestorage.app",
+            messagingSenderId: "803641473987",
+            appId: "1:803641473987:web:c2e7fd9da9fdc2b7585b76"
+        };
+
+       
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getFirestore();
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+            
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const username = userDoc.data().username;
+                    document.querySelector('.user-id').textContent = username;
+                } else {
+                    console.error("No user data found");
+                    window.location.href = '/login';
+                }
+            } else {
+              
+                window.location.href = '/login';
+            }
+        });
+        
+
+        // Function to handle logout
+        document.getElementById('logout-link').addEventListener('click', async (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            try {
+                await signOut(auth);
+                console.log("User logged out");
+
+                // Open the login page in a new tab and refresh it
+                window.open('/login', '_blank'); // Open login in new tab
+                window.location.reload(); // Refresh current page (to log out in current tab)
+            } catch (error) {
+                console.error("Error logging out:", error.message);
+            }
+        });
+    </script>
+</body>
+</html>

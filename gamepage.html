@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('{{ url_for('static', filename='background.jpeg') }}');
+            /* Add your background image path */
+            background-color: black;
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            text-align: center;
+        }
+
+        .logo {
+            position: fixed;
+            /* Makes the logo stay fixed relative to the viewport */
+            top: 38px;
+            /* Adjust the top distance */
+            left: 110px;
+            /* Adjust the left distance */
+            width: 10vw;
+            /* Keep width relative to the viewport width */
+            height: auto;
+            /* Maintain aspect ratio */
+            z-index: 10;
+            background: #ffffff0c;
+            box-shadow: 2px 2px 4px #ff00dd, -2px -2px 8px #008cff;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 20px;
+            background: #ffffff0c;
+            /* Transparent background for blur */
+            backdrop-filter: blur(20px);
+            /* Frosted glass effect */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* Timer Box */
+        .timer-box {
+            position: absolute;
+            bottom: 10px;
+            /* Place it 10px from the bottom */
+            left: 10px;
+            /* Place it 10px from the left */
+            font-size: 15px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: #ffffff0c;
+            box-shadow: 2px 2px 4px #ff00dd, -2px -2px 8px #008cff;
+        }
+
+
+        /* Difficulty Box */
+        .difficulty-box {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: #ffffff0c;
+            box-shadow: 2px 2px 4px #ff00dd, -2px -2px 8px#008cff;
+        }
+
+        /* Score Box */
+        .score-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: #ffffff0c;
+            box-shadow: 2px 2px 4px #ff00dd, -2px -2px 8px#008cff;
+        }
+
+        /* Question Box */
+        .question-box {
+            position: relative;
+            display: inline-block;
+            padding: 20px 40px;
+            background: #ffffff0c;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            box-shadow: 2px 2px 4px #ff00dd, -1px -1px 4px#008cff;
+        }
+
+        /* Answers Section */
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .answer-box {
+            flex: 1 1 calc(45% - 20px);
+            max-width: calc(45% - 20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .answer {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            background: #ffffff0c;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.753);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            /* Smooth transition */
+        }
+
+        .answer:hover {
+            color: white;
+            background: #ffffff44;
+            transform: scale(1.05);
+            box-shadow: 2px 2px 6px #ff00dd, -2px -2px 10px#008cff;
+        }
+
+        /* Next Button */
+        .btn-next {
+            background: #ffffff0c;
+            border: 2px solid white;
+            color: rgb(255, 255, 255);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 16px;
+            padding: 15px 30px;
+            margin: 15px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1), -3px -3px 10px rgba(255, 255, 255, 0);
+            /* Soft shadows */
+            transition: all 0.3s ease;
+            /* Smooth transition */
+            outline: none;
+        }
+
+        .btn-next:hover {
+            text-shadow: 2px 2px 4px #ff00dd, -1px -1px 4px#008cff;
+            background: #ffffff44;
+            transform: translateY(-2px);
+            box-shadow: 2px 2px 6px #ff00dd, -2px -2px 10px#008cff;
+        }
+
+        /* Remaining Questions Box */
+        .remaining-questions {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff00dd;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        /* Result Container */
+        .result-container {
+            display: none;
+            text-align: center;
+            font-size: 20px;
+            padding: 30px;
+            background: #ffffff0c;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Play Again Button */
+        .btn-play-again {
+            font-size: 18px;
+            padding: 15px 30px;
+            background: linear-gradient(145deg, #0f0e5f, #9421ff);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-play-again:hover {
+            background: linear-gradient(145deg, #9421ff, #0f0e5f);
+            box-shadow: 4px 4px 15px #0f0e5f, -2px -2px 10px #9421ff;
+            border-radius: 20px;
+        }
+
+        /* Spinner styles */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ff00dd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Keyframes for spinner animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Result Container */
+        .result-container {
+            display: none;
+            text-align: center;
+            font-size: 20px;
+            padding: 30px;
+            background: #ffffff0c;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .stat-box {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            background: #ffffff0c;
+            backdrop-filter: blur(5px);
+        }
+
+        .final-score-box {
+            box-shadow: 2px 2px 6px #008cff, -2px -2px 6px #008cff;
+            border: 2px solid #008cff4d;
+        }
+
+        .correct-box {
+            box-shadow: 2px 2px 6px #00ff88, -2px -2px 6px #00ff88;
+            border: 2px solid #00ff884d;
+        }
+
+        .wrong-box {
+            box-shadow: 2px 2px 6px #ff0033, -2px -2px 6px #ff0033;
+            border: 2px solid #ff00334d;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            color: #ffffffcc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='qwizzy.png') }}" alt="Quiz Logo" style="width:200px"> 
+        <div class="question-box" id="question-text">
+            <div id="spinner" class="spinner"></div> 
+        </div>
+        <div class="difficulty-box" id="difficulty">Difficulty: Loading...</div>
+        <div class="score-box" id="score">Score: 0</div>
+        <div class="answers" id="answers-container"></div>
+        <b><button class="btn-next" id="next-btn" disabled>Next Question</button></b>
+        <div class="timer-box" id="timer">Time Left: 30s</div>
+        <div class="remaining-questions" id="remaining-questions">Remaining Questions: Loading...</div>
+    </div>
+    <div class="result-container" id="result-container">
+        <h2>Game Over!</h2>
+        <div class="stat-box final-score-box">
+            <span class="stat-label">Final Score</span>
+            <span class="stat-value" id="final-score">0</span>
+        </div>
+        <div class="stat-box correct-box">
+            <span class="stat-label">Correct Answers</span>
+            <span class="stat-value" id="correct-answers">0</span>
+        </div>
+        <div class="stat-box wrong-box">
+            <span class="stat-label">Wrong Answers</span>
+            <span class="stat-value" id="wrong-answers">0</span>
+        </div>
+        <button class="btn-play-again" id="play-again-btn">Play New Game</button>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyDn8B9RI1zkTFwtzoMgdbeMFmv2zMpJggM",
+            authDomain: "qwiizzy-app.firebaseapp.com",
+            projectId: "qwiizzy-app",
+            storageBucket: "qwiizzy-app.appspot.com",
+            messagingSenderId: "803641473987",
+            appId: "1:803641473987:web:c2e7fd9da9fdc2b7585b76"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+    
+        let currentQuestion = {{ current | tojson }};
+        let score = {{ score | tojson }};
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questions = {{ questions | tojson }};
+        let totalQuestions = {{ total_questions | tojson }};
+        let timeLeft = 30;
+        let timerInterval;
+        let user = null;
+        let quizType = '{{ type }}';
+    
+        const questionText = document.getElementById('question-text');
+        const answersContainer = document.getElementById('answers-container');
+        const nextBtn = document.getElementById('next-btn');
+        const timerBox = document.getElementById('timer');
+        const scoreBox = document.getElementById('score');
+        const difficultyBox = document.getElementById('difficulty');
+        const remainingQuestionsBox = document.getElementById('remaining-questions');
+        const resultContainer = document.getElementById('result-container');
+        const finalScore = document.getElementById('final-score');
+        const correctAnswersEl = document.getElementById('correct-answers');
+        const wrongAnswersEl = document.getElementById('wrong-answers');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const spinner = document.getElementById('spinner');
+    
+        onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                user = firebaseUser;
+                initializeQuiz();
+            } else {
+                window.location.href = '/login';
+            }
+        });
+    
+        function initializeQuiz() {
+            spinner.style.display = 'none';
+            difficultyBox.textContent = `Difficulty: {{ difficulty | capitalize }}`;
+            scoreBox.textContent = `Score: ${score}`;
+            remainingQuestionsBox.textContent = `Remaining Questions: ${totalQuestions - currentQuestion}`;
+            loadQuestion();
+            startTimer();
+        }
+    
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                endQuiz();
+                return;
+            }
+    
+            const q = questions[currentQuestion];
+            answersContainer.innerHTML = '';
+    
+            if (quizType === 'boolean') {
+                // For true/false: Modify question text with a random answer
+                const allOptions = q.options.filter(opt => opt); // Non-null options
+                const randomAnswer = allOptions[Math.floor(Math.random() * allOptions.length)];
+                questionText.textContent = `${q.text} ${randomAnswer}`;
+    
+                // Render True/False radio buttons
+                const trueDiv = document.createElement('div');
+                trueDiv.className = 'answer-box answer';
+                trueDiv.dataset.index = '1';
+                const trueRadio = document.createElement('input');
+                trueRadio.type = 'radio';
+                trueRadio.name = 'answer' + currentQuestion;
+                trueRadio.value = '1';
+                trueRadio.id = 'true' + currentQuestion;
+                const trueLabel = document.createElement('label');
+                trueLabel.htmlFor = 'true' + currentQuestion;
+                trueLabel.textContent = 'True';
+                trueDiv.appendChild(trueRadio);
+                trueDiv.appendChild(trueLabel);
+                answersContainer.appendChild(trueDiv);
+    
+                const falseDiv = document.createElement('div');
+                falseDiv.className = 'answer-box answer';
+                falseDiv.dataset.index = '2';
+                const falseRadio = document.createElement('input');
+                falseRadio.type = 'radio';
+                falseRadio.name = 'answer' + currentQuestion;
+                falseRadio.value = '2';
+                falseRadio.id = 'false' + currentQuestion;
+                const falseLabel = document.createElement('label');
+                falseLabel.htmlFor = 'false' + currentQuestion;
+                falseLabel.textContent = 'False';
+                falseDiv.appendChild(falseRadio);
+                falseDiv.appendChild(falseLabel);
+                answersContainer.appendChild(falseDiv);
+    
+                trueRadio.addEventListener('change', () => selectAnswer(trueDiv, 1, randomAnswer, allOptions));
+                falseRadio.addEventListener('change', () => selectAnswer(falseDiv, 2, randomAnswer, allOptions));
+            } else {
+                // For MCQ: Display question and options as usual
+                questionText.textContent = q.text;
+                q.options.forEach((option, index) => {
+                    if (option) {
+                        const answerBox = document.createElement('div');
+                        answerBox.className = 'answer-box';
+                        const answer = document.createElement('div');
+                        answer.className = 'answer';
+                        answer.textContent = option;
+                        answer.dataset.index = index + 1;
+                        answer.addEventListener('click', () => selectAnswer(answer, index + 1));
+                        answerBox.appendChild(answer);
+                        answersContainer.appendChild(answerBox);
+                    }
+                });
+            }
+    
+            nextBtn.disabled = true;
+        }
+    
+        function selectAnswer(answerEl, selectedIndex, randomAnswer, allOptions) {
+            clearInterval(timerInterval);
+            const q = questions[currentQuestion];
+            const correctIndex = q.correct;
+            let isCorrect;
+    
+            if (quizType === 'boolean') {
+                // For true/false: Check if the random answer matches the correct answer
+                const correctAnswerText = allOptions[correctIndex - 1];
+                isCorrect = (selectedIndex === 1 && randomAnswer === correctAnswerText) || 
+                            (selectedIndex === 2 && randomAnswer !== correctAnswerText);
+            } else {
+                // For MCQ: Direct index comparison
+                isCorrect = selectedIndex === correctIndex;
+            }
+    
+            if (isCorrect) {
+                score += 10;
+                correctAnswers++;
+                answerEl.style.background = '#00ff88';
+            } else {
+                wrongAnswers++;
+                answerEl.style.background = '#ff0033';
+                const correctAnswerEl = answersContainer.querySelector(`.answer[data-index="${correctIndex}"]`);
+                if (correctAnswerEl) correctAnswerEl.style.background = '#00ff88';
+            }
+    
+            scoreBox.textContent = `Score: ${score}`;
+    
+            if (quizType === 'boolean') {
+                answersContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+            } else {
+                answersContainer.querySelectorAll('.answer').forEach(el => {
+                    el.style.pointerEvents = 'none';
+                });
+            }
+    
+            nextBtn.disabled = false;
+        }
+    
+        function startTimer() {
+            timeLeft = 30;
+            timerBox.textContent = `Time Left: ${timeLeft}s`;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerBox.textContent = `Time Left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    wrongAnswers++;
+                    nextBtn.disabled = false;
+                    const correctIndex = questions[currentQuestion].correct;
+                    const correctAnswerEl = answersContainer.querySelector(`.answer[data-index="${correctIndex}"]`);
+                    if (correctAnswerEl) correctAnswerEl.style.background = '#00ff88';
+                    if (quizType === 'boolean') {
+                        answersContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
+                            radio.disabled = true;
+                        });
+                    } else {
+                        answersContainer.querySelectorAll('.answer').forEach(el => {
+                            el.style.pointerEvents = 'none';
+                        });
+                    }
+                }
+            }, 1000);
+        }
+    
+        function endQuiz() {
+            clearInterval(timerInterval);
+            document.querySelector('.container').style.display = 'none';
+            resultContainer.style.display = 'block';
+            finalScore.textContent = score;
+            correctAnswersEl.textContent = correctAnswers;
+            wrongAnswersEl.textContent = wrongAnswers;
+    
+            if (user) {
+                fetch('/submit_score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        uid: user.uid,
+                        name: user.email || 'Anonymous',
+                        score: score
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        console.error('Failed to submit score:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error submitting score:', error));
+            }
+        }
+    
+        nextBtn.addEventListener('click', () => {
+            currentQuestion++;
+            remainingQuestionsBox.textContent = `Remaining Questions: ${totalQuestions - currentQuestion}`;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+                startTimer();
+            } else {
+                endQuiz();
+            }
+        });
+    
+        playAgainBtn.addEventListener('click', () => {
+            window.location.href = '/category';
+        });
+    </script>
+</body>
+
+</html>
